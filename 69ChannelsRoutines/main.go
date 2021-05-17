@@ -18,19 +18,20 @@ func main() {
 	for _, link := range links {
 		go checkLink(link, c)
 	}
-	fmt.Println(<-c)
-	fmt.Println(<-c)
-	fmt.Println(<-c)
-	fmt.Println(<-c)
+
+	for l := range c {
+		go checkLink(l, c)
+	}
 }
 
 func checkLink(link string, c chan string) {
 	_, err := http.Get(link)
 	if err != nil {
 
-		c <- "check failed: " + link
+		fmt.Println("check failed: ", link)
+		c <- link
 		return
 	}
-
-	c <- "check ok: " + link
+	fmt.Println("check ok:", link)
+	c <- link
 }
